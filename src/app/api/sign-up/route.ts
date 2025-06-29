@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         }
 
         const existingUserByEmail = await UserModel.findOne({ email });
-        let verifiedCode = Math.floor(100000 + Math.random() * 900000).toString();
+        let verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
 
         if (existingUserByEmail) {
             if (existingUserByEmail.isVerified) {
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
             else {
                 const hashedPassword = await bcrypt.hash(password, 10);
                 existingUserByEmail.password = hashedPassword;
-                existingUserByEmail.verifyCode = verifiedCode;
+                existingUserByEmail.verifyCode = verifyCode;
                 existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);
                 await existingUserByEmail.save();
             }
@@ -55,15 +55,16 @@ export async function POST(request: Request) {
             expiryDate.setHours(expiryDate.getHours() + 1);
 
             const newUser = new UserModel({
-                username,
-                email,
-                password: hashedPassword,
-                verifiedCode,
-                verifyCodeExpiry: expiryDate,
-                isVerified: false,
-                isAcceptingMessages: true,
-                messages: [],
-            })
+            username,
+            email,
+            password: hashedPassword,
+            verifyCode, // ✅ correct
+            verifyCodeExpiry: expiryDate,
+            isVerified: false,
+            isAcceptingMessages: true,
+            messages: [],
+});
+
             await newUser.save();
 
         }
@@ -73,7 +74,7 @@ export async function POST(request: Request) {
         const emailResponse = await sendVerificationEmail(
             email,
             username,
-            verifiedCode
+            verifyCode
         );
  console.log("📬 Email response:", emailResponse);
  if (!emailResponse.success) {
