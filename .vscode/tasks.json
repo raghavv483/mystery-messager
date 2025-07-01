@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Install shadcn/ui dependencies",
+			"command": "npm install class-variance-authority @radix-ui/react-slot tailwind-merge tailwindcss-animate",
+			"group": "build",
+			"problemMatcher": []
+		}
+	]
+}
