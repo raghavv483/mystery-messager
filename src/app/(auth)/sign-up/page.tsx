@@ -9,6 +9,7 @@ import { useDebounceCallback, useDebounceValue } from 'usehooks-ts'
 import { Button } from '@/components/ui/button'
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
@@ -26,7 +27,7 @@ export default function SignUpForm() {
   const [usernameMessage, setUsernameMessage] = useState('')
   const [isCheckingUsername, setIsCheckingUsername] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const debouncedUsername = useDebounceValue(username, 300)
+  const debounced = useDebounceCallback(setUsername, 300)
 
   const router = useRouter()
 
@@ -41,12 +42,12 @@ export default function SignUpForm() {
 
   useEffect(() => {
     const checkUsernameUnique = async () => {
-      if (debouncedUsername) {
+      if (username) {
         setIsCheckingUsername(true)
         setUsernameMessage('')
         try {
           const response = await axios.get<ApiResponse>(
-            `/api/check-username-unique?username=${debouncedUsername}`
+            `/api/check-username-uniqness?username=${username}`
           );
           setUsernameMessage(response.data.message);
 
@@ -62,7 +63,7 @@ export default function SignUpForm() {
       }
     };
     checkUsernameUnique();
-  }, [debouncedUsername])
+  }, [username])
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsSubmitting(true)
@@ -113,13 +114,15 @@ export default function SignUpForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
+                  <FormControl></FormControl>
                   <Input
                     {...field}
                     onChange={(e) => {
                       field.onChange(e);
-                      setUsername(e.target.value);
+                      debounced(e.target.value);
                     }}
                   />
+                  <FormControl/>
                   {isCheckingUsername && <Loader2 className="animate-spin" />}
                   {!isCheckingUsername && usernameMessage && (
                     <p
