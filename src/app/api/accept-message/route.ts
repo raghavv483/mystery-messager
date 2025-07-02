@@ -68,7 +68,7 @@ export async function GET(request: Request) {
         )
     }
     try {
-        const foundUser = await UserModel.findOne(user._id)
+        const foundUser = await UserModel.findOne({_id:user._id})
         if (!foundUser) {
             // User not found
             return Response.json(
