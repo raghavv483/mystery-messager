@@ -1,5 +1,4 @@
 'use client';
-
 import MessageCard from '@/components/MessageCard';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -177,7 +176,9 @@ function UserDashboard() {
             />
           ))
         ) : (
-          <p>No messages to display.</p>
+          <p>No messages to display.
+            
+          </p>
         )}
       </div>
     </div>
